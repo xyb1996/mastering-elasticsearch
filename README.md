@@ -1,4 +1,4 @@
-# Mastering Elasticsearc(中文版)
+# Mastering Elasticsearch(中文版)
 
 译者：帅广应
 
@@ -7,6 +7,6 @@
 微博：@帅广应s
 
 
-说明：学习Elasticsearch以及了解一个gitbook这个平台
+说明：学习Elasticsearch以及了解一下gitbook这个平台
 
 
