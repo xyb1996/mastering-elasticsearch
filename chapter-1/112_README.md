@@ -3,10 +3,10 @@
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;尽管我希望直奔主题，介绍Lucene的架构，但是首先必须理解一些概念才能更好地理解Lucene的架构，这些概念是：</div>
 <hr>
 <ul>
-<li><b>Document</b>:&nbsp;&nbsp;它是在索引和搜索过程中数据的主要表现形式，或者称“载体”，它由一个或者多个域(Field)组成，承载着我们索引和搜索的数据。 </li>
+<li><b>Document</b>:&nbsp;&nbsp;它是在索引和搜索过程中数据的主要表现形式，或者称“载体”，承载着我们索引和搜索的数据,它由一个或者多个域(Field)组成。 </li>
 <li><b>Field</b>:&nbsp;&nbsp; 它是Document的组成部分，由两部分组成，名称(name)和值(value)。</li>
 <li><b>Term</b>:&nbsp;&nbsp;它是搜索的基本单位，其表现形式为文本中的一个词。</li>
-<li><b>Token</b>:&nbsp;&nbsp;它是单个Term在所属Field中文本的呈现，包含了Term内容、Term类型、Term在文本中的起始及偏移位置。</li>
+<li><b>Token</b>:&nbsp;&nbsp;它是单个Term在所属Field中文本的呈现形式，包含了Term内容、Term类型、Term在文本中的起始及偏移位置。</li>
 </ul>
 <hr>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apache Lucene把所有的信息都写入到一个称为**倒排索引**的数据结构中。这种数据结构把索引中的每个Term与相应的Document映射起来，这与关系型数据库存储数据的方式有很大的不同。读者可以把倒排索引想象成这样的一种数据结构：数据以Term为导向，而不是以Document为导向。下面看看一个简单的倒排索引是什么样的，假定我们的Document只有title域(Field)被编入索引，Document如下：</div>
@@ -29,7 +29,7 @@
 | Solr | 1 | <3> |
 
 <br/><br/>
-<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;正如所看到的那样，每个词都指向它所在的文档号(Document Number/Document ID)。这样的存储方式使得高效的信息检索成为可能，比如基于词的检索(term-based query)。此外，每个词映射着一个数值(Count)，它代表着Term在文档集中出现的频率信息。
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;正如所看到的那样，每个词都指向它所在的文档号(Document Number/Document ID)。这样的存储方式使得高效的信息检索成为可能，比如基于词的检索(term-based query)。此外，每个词映射着一个数值(Count)，它代表着Term在文档集中出现的频繁程度。
 </div>
 <br/>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当然，Lucene创建的真实索引远比上文复杂和先进。这是因为在Lucene中，<b>词向量</b>(由单独的一个Field形成的小型倒排索引，通过它能够获取这个特殊Field的所有Token信息)可以存储；所有Field的原始信息可以存储；删除Document的标记信息可以存储……。核心在于了解数据的组织方式，而非存储细节。</div>
