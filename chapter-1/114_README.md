@@ -38,7 +38,7 @@
 <div style="height:57px;margin-left:20px;float:left;"><img src="../tipsL.png"/></div>
 <div style="height:52px;width:65%;float:left;word-wrap: break-word;word-break: normal; color:gray;font-family:COURIER;font-size:12px;background-color:#F7F7F7;padding-top:5px;">请注意出于性能考虑，默认的通配符不能是关键词的首字母。</div>
 <div style="height:57px;float:left;"><img src="../tipsR.png"/></div>
-<br/>
+<br/><br/>
 <div style="clear:both;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;此外，Lucene支持模糊查询(fuzzy query)和邻近查询(proximity query)。语法规则是查询表达式后面接一个~符号，后面紧跟一个整数。如果查询表达式是单独一个Term，这表示我们的搜索关键词是Term的变形。这种搜索方式称为模糊搜索(fuzzy search)。在~符号后面的整数表示最大编辑距离。例如：执行查询表达式 "writer~2"能够搜索到含writer和writers的文档。</div>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当~符号用于一个短语时，~后面的整数表示短语中可接收的最大的词编辑距离。举个例子,查询表达式title:"mastering elasticsearch"只能匹配title域中含"mastering elasticsearch"的文档，而无法匹配含"mastering book elasticsearch"的文档。但是如下查询表达式变成title:"mastering elasticsearch"~2,那么两种文档就都能够成功匹配了。</div></br>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;此外，我们还可以使用加权(boosting)机制来改变关键词的重要程度。加权机制的语法是一个^符号后面接一个数字表示权重。如果权重小于1，就会降低关键词的重要程度。同理，如果权重大于1就会增加关键词的重要程度。默认的加权值为1。可以参考<span style="font-style:oblique">第2章 活用用户查询语言</span>的<span style="font-style:oblique">Lucene默认打分规则详解</span>来了解更多关于加权(boosting)是如何影响打分排序的。</div>
