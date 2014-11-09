@@ -5,7 +5,7 @@
    * [认识Apache Lucene](chapter-1/11_README.md)
        * [熟悉Lucene](chapter-1/111_README.md)
        * [总体架构](chapter-1/112_README.md)
-       * [解析你的文本](chapter-1/113_README.md)
+       * [分析你的文本](chapter-1/113_README.md)
        * [Lucene查询语言](chapter-1/114_README.md)
    * [认识 ElasticSearch](chapter-1/12_README.md)
 * [第2章 活用用户查询语言DSL](chapter-2/README.md)
