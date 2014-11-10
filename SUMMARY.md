@@ -9,7 +9,7 @@
        * [Lucene查询语言](chapter-1/114_README.md)
    * [认识 ElasticSearch](chapter-1/12_README.md)
        * [基本概念](chapter-1/121_README.md)
-       * [ElasticSearch背后的核心概念](chapter-1/122_README.md)
+       * [ElasticSearch背后的核心理念](chapter-1/122_README.md)
        * [ElasticSearch的运行机制](chapter-1/123_README.md)
 * [第2章 活用用户查询语言DSL](chapter-2/README.md)
 * [第3章 深入索引内部](chapter-3/README.md)

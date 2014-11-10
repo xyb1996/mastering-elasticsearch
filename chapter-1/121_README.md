@@ -8,7 +8,7 @@
 
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在ElasticSearch的世界中，文档(Document)是主要的存在实体(在Lucene中也是如此)。所有的ElasticSearch应用需求到最后都可以统一建模成一个检索模型：检索相关文档。文档(Document)由一个或者多个域(Field)组成，每个域(Field)由一个域名(此域名非彼域名)和一个或者多个值组成(有多个值的值称为多值域(multi-valued))。在ElasticSeach中，每个文档(Document)都可能会有不同的域(Field)集合；也就是说文档(Document)是没有固定的模式和统一的结构。文档(Document)之间保持结构的相似性即可(Lucene中的文档(Document)也秉持着相同的规定)。实际上，ElasticSearch中的文档(Document)就是Lucene中的文档(Document)。从客户端的角度来看，文档(Document)就是一个JSON对象(关于JSON格式的相关信息,请参看hhtp://en.wikipedia.org/wiki/JSON)。</div>
 ### 参数映射(Mapping)
-<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在&nbsp;<span style="font-style:oblique">&nbsp;1.1节 认识Apache Lucene&nbsp;</span>&nbsp;中已经提到，所有的文档(Document)在存储之前都必须经过分析(analyze)这个流程。用户可以配置输入文本分解成Token的方式；哪些Token应该被过滤掉；或者其它的的处理流程，比如去除HTML标签。此外，ElasticSearch提供的各种特性，比如排序的相关信息。保存上述的配置信息，这就是参数映射(Mapping)在ElasticSearch中扮演的角色。尽管ElasticSearch可以根据域的值自动识别域的类型(field type)，在生产应用中，都是需要自己配置这些信息以避免一些古怪怪的问题发生。要保证应用的可控性。</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在&nbsp;<span style="font-style:oblique">&nbsp;1.1节 认识Apache Lucene&nbsp;</span>&nbsp;中已经提到，所有的文档(Document)在存储之前都必须经过分析(analyze)流程。用户可以配置输入文本分解成Token的方式；哪些Token应该被过滤掉；或者其它的的处理流程，比如去除HTML标签。此外，ElasticSearch提供的各种特性，比如排序的相关信息。保存上述的配置信息，这就是参数映射(Mapping)在ElasticSearch中扮演的角色。尽管ElasticSearch可以根据域的值自动识别域的类型(field type)，在生产应用中，都是需要自己配置这些信息以避免一些古怪怪的问题发生。要保证应用的可控性。</div>
 
 ### 文档类型(Type)
 
@@ -26,6 +26,12 @@
 
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;前面已经提到，集群能够存储超出单机容量的信息。为了实现这种需求，ElasticSearch把数据分发到多个存储Lucene索引的物理机上。这些Lucene索引称为分片索引，这个分发的过程称为索引分片(Sharding)。在ElasticSearch集群中，索引分片(Sharding)是自动完成的，而且所有分片索引(Shard)是作为一个整体呈现给用户的。需要注意的是，尽管索引分片这个过程是自动的，但是在应用中需要事先调整好参数。因为集群中分片的数量需要在索引创建前配置好，而且服务器启动后是无法修改的，至少目前无法修改。</div>
 
-### 复制(Replica)
+### 索引副本(Replica)
 
-<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通过索引分片机制可以向ElasticSearch集群中导入超过单机容量的数据，客户端操作任意一个节点即可完成读写集群中所有的数据。</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通过索引分片机制(Sharding)可以向ElasticSearch集群中导入超过单机容量的数据，客户端操作任意一个节点即可实现对集群数据的读写操作。当集群负载增长，用户搜索请求阻塞在单个节点上时，通过索引副本(Replica)机制就可以解决这个问题。索引副本(Replica)机制的的思路很简单：为索引分片创建一份新的拷贝，它可以像原来的主分片一样处理用户搜索请求。同时也顺便保证了数据的安全性。即如果主分片数据丢失，ElasticSearch通过索引副本使得数据不丢失。索引副本可以随时添加或者删除，所 以用户可以在需要的时候动态调整其数量。</div>
+
+### 时间之门(Gateway)
+
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在运行的过程中，ElasticSearch会收集集群的状态、索引的参数等信息。这些数据被存储在Gateway中。</div>
+
+
