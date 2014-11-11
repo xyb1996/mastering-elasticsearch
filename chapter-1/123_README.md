@@ -16,4 +16,10 @@
 ### 探测失效节点
 
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在正常工作时，主节点会监控所有的节点，查看各个节点是否工作正常。如果在指定的时间里面，节点无法访问，该节点就被视为出故障了，接下来错误处理程序就会启动。集群需要重新均衡——由于该节点出现故障，分配到该节点的索引分片丢失。其它节点上相应的分片就会把工作接管过来。换句话说，对于每个丢失的主分片，新的主分片将从剩余的分片副本(Replica)中选举出来。重新安置新的分片和副本的这个过程可以通过配置来满足用户需求。更多相关信息可以参看<span style="font-style:oblique">&nbsp;第4章 分布式索引架构</span>。</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;由于只是展示ElasticSearch的工作原理，我们就以下图三个节点的集群为例。集群中有一个主节点和两个数据节点。主节点向其它的节点发送Ping命令然后等待回应。如果没有得到回应(实际上可能得不到回复的Ping命令个数取决于用户配置)，该节点就会被移出集群。</div>
+<center><img src="../cluster13.png"/></center>
 
+### 与ElasticSearch进行通信
+
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们已经探讨了ElasticSearch是如何构建起来的，但是归根到底，最重要的是如何往ElasticSearch中添加数据以及如何查询数据。为了实现上述的需求，ElasticSearch提供了精巧的API。这些主要的API都是基于REST风格(参看http://en.wikipedia.org/wiki/Pepresentational_state_transfer)。而且这些API非常容易与其它能够发送HTTP请求的系统进行集成。</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
