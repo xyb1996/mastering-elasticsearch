@@ -36,6 +36,20 @@
 <br/>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;每个索引被分成了多个段(Segment)，段具有一次写入，多次读取的特点。只要形成了，段就无法被修改。例如：被删除文档的信息被存储到一个单独的文件，但是其它的段文件并没有被修改。</div><br/>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;需要注意的是，多个段是可以合并的，这个合并的过程称为<b>segments merge</b>。经过强制合并或者Lucene的合并策略触发的合并操作后，原来的多个段就会被Lucene创建的更大的一个段所代替了。很显然，段合并的过程是一个I/O密集型的任务。这个过程会清理一些信息，比如会删除.del文件。除了精减文件数量，段合并还能够提高搜索的效率，毕竟同样的信息，在一个段中读取会比在多个段中读取要快得多。但是，由于段合并是I/O密集型任务，建议不好强制合并，小心地配置好合并策略就可以了。<div>
-<br/>
-<div style="font-size:14;color:#4271AE">如果想了解段由哪些文件组成，想了解每个文件中存储了什么信息，可以参考Apache Lucene documentation ,访问地址：http://lucene.apache.org/core/4_5_0/core/org/apache/lucene/codecs/lucene45/package-summary.html.</div>
+<br/><!--note -->
+<div style="height:110px;width:650px;">
+<div style="float:left;width:13px;height:100%; background:black;">
+  <img src="../lm.png" height="100px" width="13px" style="margin-top:5px;"/>
+</div>
+<div style="float:left;width:50px;height:100%;position:relative;">
+	<img src="../note.png" style="position:absolute; top:30%; "/>
+</div>
+<div style="float:left; width:550px;height:100%;">
+	<p style="font-size:13px;"><br/>果想了解段由哪些文件组成，想了解每个文件中存储了什么信息，可以参考Apache Lucene documentation ,访问地址：http://lucene.apache.org/core/4_5_0/core/org/apache/lucene/codecs/lucene45/package-summary.html.</p>
+</div>
+<div style="float:left;width:13px;height:100%;background:black;">
+  <img src="../rm.png" height="100px" width="13px" style="margin-top:5px;"/>
+</div>
+</div>
+
 
