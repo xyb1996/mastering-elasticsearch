@@ -14,7 +14,3 @@
 </ul>
 
 </div>
-
-## Apache Lucene默认打分方式的原理
-
-<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  当谈论到查询的相关性，很重要的一件事就是对于给定的查询语句，文档的得分如何计算。什么是文档的得分？</div>
