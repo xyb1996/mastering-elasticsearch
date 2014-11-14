@@ -22,7 +22,7 @@
    * [使用filters优化查询](chapter-2/27_README.md)
    * [认识Apache Lucene](chapter-2/28_README.md)
    * [本章小结](chapter-2/29_README.md)
-* [第3章 深入索引内部](chapter-3/README.md)
+* [第3章 索引底层控制](chapter-3/README.md)
 * [第4章 探究分布式索引架构](chapter-4/README.md)
 * [第5章 管理Elasticsearch](chapter-5/README.md)
 * [第6章 应对突发事件](chapter-6/README.md)
