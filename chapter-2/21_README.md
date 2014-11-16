@@ -44,7 +44,7 @@
 </div>
 </div> <!-- end of note structure -->
 <br/>
-<div></div>
+<div/>
 
 ### Lucene实际应用的打分公式
 

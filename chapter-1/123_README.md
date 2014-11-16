@@ -69,15 +69,14 @@ version of Elastic Search released!", "content": "...", "tags":
 	<img src="../note.png" style="position:absolute; top:20%; "/>
 </div>
 <div style="float:left; width:550px;height:100%;">
-	<p style="font-size:13px;"><br/>用户可以通过指定搜索类型来控制查询的分发和汇总过程，目前搜索类型只有6种可选值。在Packet的著作《ElasticSearch Server》一书中，已经讲述了查询范围(query scope)这一知识点.</p>
+	<p style="font-size:13px;"><br/>用户可以通过指定搜索类型来控制查询的分发和汇总过程，目前搜索类型只有6种可选值。在Packt的出版的《ElasticSearch Server》一书中，已经讲述了查询范围(query scope)这一知识点.</p>
 </div>
 <div style="float:left;width:13px;height:100%;background:black;">
   <img src="../rm.png" height="60px" width="13px" style="margin-top:5px;"/>
 </div>
 </div>
-<br/><!--note -->
-
-### 索引参数设置
+<!--note -->
+<h3>索引参数设置</h3>
 
 <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;前面已经提到ElasticSearch索引参数的自动化配置和文档结构及域类型的自动识别。当然，ElasticSearch也允许用户自行修改默认配置。用户可以自行配置很多参数，比如通过mapping配置索引中的文档结构，设置分片(shard)和副本(replica)的的个数，设置文本分析组件……</div>
 
