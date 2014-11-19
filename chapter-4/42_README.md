@@ -87,6 +87,49 @@ curl&nbsp;-XPUT&nbsp; localhost:9200/documents/doc/3&nbsp;-d&nbsp;'{ "title" : "
 <p>另外一种方式就是在创建文档时把_routing域放进去：
 <blockquote style="text-indent:0em;">curl&nbsp;-XPUT&nbsp; localhost:9200/documents/doc/1&nbsp;-d&nbsp;'{ "title":"Document","_routing":"A" }'</blockquote>
 </p>
-<p>然而这种方式只有在mapping中定义了_routing域才会生效。</p>
+<p>然而这种方式只有在mapping中定义了_routing域才会生效。例如：
+<blockquote style="text-indent:0em;">
+"mappings": {<blockquote>
+ "doc": {<blockquote>
+ "_routing": {<blockquote>"required": true,<br/>
+ "path": "_routing"</blockquote>
+ },
+ "properties": {<blockquote>
+ "title" : {"type": "string" }</blockquote>
+ }</blockquote>
+ }</blockquote>
+ }
+</blockquote>
+</p>
+<p>让我们在这里停留一下。在本例中，我们用到了_routing域。值得一提的是path参数可以指向文档中任何not-analyzed域。这是一个非常强大的特性。例举routing特性的一个主要的优点：比如我们在文档中定义了library_id域，用来表示书籍所在的藏书室编号。当我们基于library_id域来实现路由功能，基于该藏书室检索相关图书将使检索过程更高效，这样做也是合乎逻辑的。</p>
+<p>现在，我们回过头来继续讨论routing值的定义方式。最后一个办法是使用批处理索引。在下面的例子中，routing被放置到每个文档的头部信息块中。例如：
+<blockquote style="text-indent:0em;">
+curl&nbsp;-XPUT&nbsp;localhost:9200/_bulk&nbsp;--data-binary&nbsp;
+'{<blockquote>"index" : {<blockquote>"_index" : "documents", "_type" : "doc", "_routing" : "A"
+</blockquote>}</blockquote>}
+{ "title" : "Document No. 1" }
+'
+</blockquote>
+既然已经了解routing是如何工作的，那么就回到例子中。
+</p>
+
+<h3 style="text-indent:0em;">启用路由功能(routing)索引数据</h3>
+
+<p>现在，我们对照前面的例子，依样画葫芦，除了一点不一样，那就是使用路由功能(routing)。第一件事就是删除所有旧的文档。如果不清空索引数据，添加id相同的文档到索引中时，routing会把文档定位到其它的分片上。因此，运行如下的命令清空索引数据：
+<blockquote style="text-indent:0em;">
+curl&nbsp;-XDELETE&nbsp;localhost:9200/documents/_query?q=*:*
+</blockquote>
+</p>
+<p>经过这一步，我们重新索引数据。但是这次要添加上routing信息。因此索引数据的命令如下：
+<blockquote style="text-indent:0em;">curl&nbsp;-XPUT&nbsp;localhost:9200/documents/doc/1?routing=A &nbsp;-d&nbsp;'{ "title" :
+"Document No. 1" }'<br/>
+curl&nbsp;-XPUT&nbsp;localhost:9200/documents/doc/2?routing=B &nbsp;-d&nbsp;'{ "title" :
+"Document No. 2" }'<br/>
+curl&nbsp;-XPUT&nbsp;localhost:9200/documents/doc/3?routing=A &nbsp;-d&nbsp;'{ "title" :
+"Document No. 3" }'<br/>
+curl&nbsp;-XPUT&nbsp;localhost:9200/documents/doc/4?routing=A &nbsp;-d&nbsp;'{ "title" :
+"Document No. 4" }'<br/>
+</blockquote>
+</p>
 </div>
 
