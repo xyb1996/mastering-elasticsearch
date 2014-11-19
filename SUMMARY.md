@@ -25,7 +25,7 @@
 * [第3章 索引底层控制](chapter-3/README.md)
 * [第4章 探究分布式索引架构](chapter-4/README.md)
    * [选择恰当的分片数量和分片副本数量](chapter-4/41_README.md)
-   * [路由浅谈](chapter-4/42_README.md)
+   * [路由功能浅谈](chapter-4/42_README.md)
    * [改变分片的默认分配方式](chapter-4/43_README.md)
    * [调整分片的分布](chapter-4/44_README.md)
    * [在指定的分片上执行查询命令](chapter-4/45_README.md)
