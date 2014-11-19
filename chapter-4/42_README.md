@@ -78,7 +78,15 @@ curl&nbsp;-XPUT&nbsp; localhost:9200/documents/doc/3&nbsp;-d&nbsp;'{ "title" : "
 
 <p>正如你所看见的那样，ElasticSearch返回了分片失效的信息。我们看到分片1失效。在返回的结果集中，我们只看到了ID为1和3的文档。至少在主分片1重新连接到集群之前，其它的文档丢失。如果重新启动第二个节点，经过一段时间(取决于网络情况和gateway模块的参数设置)，集群将返回绿色状态，而且整个索引中的文档都可用。接下来，我们将用路由功能(routing)来做与上面一样的事情，并观察两者在集群中的不同点。</p>
 
-<h3>启用路由功能(routing)索引数据</h3>
+<h4 style="text-indent:0em;">启用路由功能(routing)索引数据</h4>
 
+<p>通过路由功能，用户能够控制ElasticSearch用哪个分片来存储文档。路由的参数值是无关紧要的，可以由用户随意给出。关键点在于相同的参数值应该用来把不同的文档导向同一个分片。</p>
+<p>将路由参数信息写入到ElasticSearch中有多种方式，最简单的一种是在索引文档的时候提供一个<span style="font-size:13">routing</span>URL 参数。比如：
+<blockquote style="text-indent:0em;">curl&nbsp;-XPUT&nbsp; localhost:9200/documents/doc/1?routing=A&nbsp;-d&nbsp;'{ "title":"Document" }'</blockquote>
+</p>
+<p>另外一种方式就是在创建文档时把_routing域放进去：
+<blockquote style="text-indent:0em;">curl&nbsp;-XPUT&nbsp; localhost:9200/documents/doc/1&nbsp;-d&nbsp;'{ "title":"Document","_routing":"A" }'</blockquote>
+</p>
+<p>然而这种方式只有在mapping中定义了_routing域才会生效。</p>
 </div>
 
