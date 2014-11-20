@@ -29,7 +29,7 @@
    * [调整集群的分片分配](chapter-4/44_README.md)
    * [改变分片的默认分配方式](chapter-4/43_README.md)
    * [在指定的分片上执行查询命令](chapter-4/45_README.md)
-   * [知识的灵活运用](chapter-4/46_README.md)
+   * [学以致用](chapter-4/46_README.md)
    * [本章小结](chapter-4/47_README.md)
 * [第5章 管理Elasticsearch](chapter-5/README.md)
 * [第6章 应对突发事件](chapter-6/README.md)
