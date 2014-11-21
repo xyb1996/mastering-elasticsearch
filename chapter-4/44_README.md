@@ -113,4 +113,6 @@ cluster.routing.allocation.awareness.force.zone.values: groupA, groupB
 </div>
 </div> <!-- end of note structure -->
 <h4>运行时allocation参数更新</h4>
+<p>除了可以在elasticsearch.yml文件中设置前面讨论的属性，当集群在线时，我们也可以通过update API来实时更新这些参数。</p>
+<h5>索引层面的参数更新</h5>
 </div>
