@@ -165,6 +165,83 @@ curl&nbsp;-XPUT&nbsp; 'localhost:9200/mastering/\_settings'&nbsp; -d&nbsp; '{
 现在，让我们看看在elasticsearch.yml文件中配置了allocation的相关属性后，几个单索引集群会变成什么样。
 </p>
 <h4>"结点包含"属性</h4>
+<p>现在通过我们的示例集群来看看allocation inclusion 是怎么工作的。最开始，用如下的命令创建一个mastering索引。
+<blockquote>curl -XPOST 'localhost:9200/mastering' -d '{
+ "settings" : {
+ "index" : {
+ "number_of_shards" : 2,
+ "number_of_replicas" : 0
+ }
+ }
+}'</blockquote>
+创建索引后，试着执行如下的命令：
+<blockquote>
+curl -XPUT 'localhost:9200/mastering/_settings' -d '{
+ "index.routing.allocation.include.tag": "node1",
+ "index.routing.allocation.include.group": "groupA",
+ "index.routing.allocation.total_shards_per_node": 1
+}'
+</blockquote>
+如果让索引状态可视化，那么集群看起来应该跟下面的图差不多.
+</p>
+<center><img src="../43_include.png"/></center>
+<p>正如你所看见的，Mastering索引的分片只分配到了tag属性值为node1或者group属性值为groupA的节点。</p>
 <h4>"结点必须"属性</h4>
+<p>现在对我们的示例集群再回收利用(假定集群中已经没有任何索引存在)。我们再一次用如下的命令创建一个mastering索引：
+<blockquote>curl -XPOST 'localhost:9200/mastering' -d '{
+ "settings" : {
+ "index" : {
+ "number_of_shards" : 2,
+ "number_of_replicas" : 0
+ }
+ }
+}'</blockquote>
+随后，试着执行下面命令：
+<blockquote>curl -XPUT 'localhost:9200/mastering/_settings' -d '{
+ "index.routing.allocation.require.tag": "node1",
+ "index.routing.allocation.require.group": "groupA"
+}'</blockquote>
+如果让索引状态可视化，那么集应该跟如下图所示：
+</p>
+<center><img src="../43_require.png"/></center>
+<p>我们可以看到图示跟使用include属性有些不同。这是因为我们告诉ElasticSearch把Mastering索引的分片只分配到满足require参数所有设定值的节点上，在本例中只有第一个节点满足条件。</p>
 <h4>"结点排除"属性</h4>
+<p>我们再一次使用示例集群，并且用如下的命令创建mastering索引：
+<blockquote>
+curl -XPOST 'localhost:9200/mastering' -d '{
+ "settings" : {
+ "index" : {
+ "number_of_shards" : 2,
+ "number_of_replicas" : 0
+ }
+ }
+}'
+</blockquote>
+随后，试着执行下面的命令来测试allocation exclusion属性：
+<blockquote>
+curl -XPUT 'localhost:9200/mastering/_settings' -d '{
+ "index.routing.allocation.exclude.tag": "node1",
+ "index.routing.allocation.require.group": "groupA"
+}'
+</blockquote>
+接下来，查看集群中各个节点的状态：
+</p>
+<center><img src="../43_exclude.png"/></center>
+<p>正如所见的那样，我们需要group属性值为groupA，但同时我们又要排除tag属性中值为node1的节点。这导致Mastering索引的分片被分配到了IP地址为192.168.2.2的节点上，这也是我们所希望的。</p>
+
+<h3>其它的shard allocation属性</h3>
+
+<p>除了前面提到的那些属性，在配置shard allocation时，ElasticSearch还提供了其它的几个特性。下面我们一起来了解一下这些属性，看看集群中还有哪些是我们可以控制的<ul>
+<li>cluster.routing.allocation.allow\_rebalance: </li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+</ul>
+
+</p>
 </div>
