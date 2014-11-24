@@ -31,5 +31,9 @@
 <h4>决策者(Deciders)</h4>
 <p>为了了解分片分配器是如何决定什么时候分片会被移动，又该移向哪个节点，我们需要探究ElaticSearch的内部实现方式，这个内部实现方式称为决策者(deciders)。它们就像是人的大脑一样制定分配决策。ElasticSearch允许用户同时使用多个决策者，所有的决策者在决策时进行投票。它们遵循一致性原则，比如，如果一个决策者反对重新分配一个分片，那么这个分片就不会被移动。如下的决策者是ElasticSearch内置的，它们的决策方式一成不变，除非修改源代码。让我们来看看哪些决策者是默认的</p>
 <h4>SameShardAllocationDecider</h4>
-<p>正如它的名字一样，这个决策者不允许数据及副本(主分片和分片副本)安置到同一个节点。这样做的原因很明显：我们不希望备份数据和源数据放在同一个地方。说到这个决策者，我们就不得不提cluster.routing.allocation.same\_shard.host属性。它控制着ElasticSearch是否该留意分片所在的物理机。其默认值为false，因为同一个服务器上可以运行多个节点，可以是通过多虚拟机的方式。当设置它的值为true时，这个决策者就不允许把分片和它的分片副本分配到同一个物理机上。这看起来可能有点奇怪，但是考虑到现在各种虚拟化技术大行其道，操作系统都不清楚它运行在哪台物理机。正因为如此，最好</p>
+<p>正如它的名字一样，这个决策者不允许数据及副本(主分片和分片副本)安置到同一个节点。这样做的原因很明显：我们不希望备份数据和源数据放在同一个地方。说到这个决策者，我们就不得不提cluster.routing.allocation.same\_shard.host属性。它控制着ElasticSearch是否该留意分片所在的物理机。其默认值为false，因为同一个服务器上可以运行多个节点，可以是通过多虚拟机的方式。当设置它的值为true时，这个决策者就不允许把分片和它的分片副本分配到同一个物理机上。这看起来可能有点奇怪，但是想想现在各种虚拟化技术大行其道，在现代社会甚至操作系统都无法决定其运行在哪台物理机。正因为如此，最好更多地依靠index.routing.allocation属性家族的其它设置方式来实现这一功能，相关的内容可以从本章<i>调整集群的分片分配</i>一节中了解。</p>
+<h4>ShardsLimitAllocationDecider</h4>
+<p>ShardsLimitAllocationDecider确保对于给定的索引，每个节点上分片的数量不会多于设定的数量，该值设定在index.routing.allocation.total\_shards\_per\_node属性中，可以将该属性添加在elasticsearh.yml文件中或者用update API实时更改。默认的值是-1，代表节点上分片的数量没有任何限制。需要注意，如降低该值会导致集群强制进行分片的重新分配，在集群平衡这个过程中引发额外的负载。</p>
+<h4>FilterAllocationDecider</h4>
+<p>FilterAllocationDecider用于添加分控制片分配的相关属性，即这些属性的名字都能匹配\*.routing.allocation.\*正则表达式。关于该决策者的工作方式，可以在本章的adjusting shard allocation一节中找到更多的信息。</p>
 </div>
