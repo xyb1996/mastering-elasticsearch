@@ -2,7 +2,7 @@
 
 译者：帅广应
 
-GitHub:https://github.com/shgy/mastering-elasticsearch
+GitHub：https://github.com/shgy/mastering-elasticsearch.git
 
 邮箱：810050504@qq.com
 
