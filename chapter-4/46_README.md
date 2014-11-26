@@ -26,44 +26,43 @@
 <p>当然，分片及分片副本真实的放置位置可能有所不同，但是背后的逻辑是一致的：即我们希望一节点一分片。</p>
 <h4>集群完整配置</h4>
 <p>接下来我们为集群创建配置信息，并详细讨论为什么要在集群中使用如下的属性：</p>
-<blockquote>
-cluster.name: books
-\# node configuration
-node.master: true
-node.data: true
-node.max\_local\_storage\_nodes: 1
-\# indices configuration
-index.number\_of\_shards: 2
-index.number\_of\_replicas: 1
-index.routing.allocation.total\_shards\_per\_node: 1
-\# instance paths
-path.conf: /usr/share/elasticsearch/conf
-path.plugins: /usr/share/elasticsearch/plugins
-path.data: /mnt/data/elasticsearch
-path.work: /usr/share/elasticsearch/work
-path.logs: /var/log/elasticsearch
-\# swapping
-bootstrap.mlockall: true
-\#gateway
-gateway.type: local
-gateway.recover\_after\_nodes: 3
-gateway.recover\_after\_time: 30s
-gateway.expected\_nodes: 4
-\# recovery
-cluster.routing.allocation.node\_initial\_primaries\_recoveries: 1
-cluster.routing.allocation.node\_concurrent\_recoveries: 1
-indices.recovery.concurrent_streams: 8
-\# discovery
-discovery.zen.minimum\_master\_nodes: 3
-\# search and fetch logging
-index.search.slowlog.threshold.query.info: 500ms
-index.search.slowlog.threshold.query.debug: 100ms
-index.search.slowlog.threshold.fetch.info: 1s
-index.search.slowlog.threshold.fetch.debug: 200ms
-\# JVM gargabe collection work logging
-monitor.jvm.gc.ParNew.info: 700ms
-monitor.jvm.gc.ParNew.debug: 400ms
-monitor.jvm.gc.ConcurrentMarkSweep.info: 5s
+<blockquote style="text-indent:0;">cluster.name: books<br/>
+\# node configuration<br/>
+node.master: true<br/>
+node.data: true<br/>
+node.max\_local\_storage\_nodes: 1<br/>
+\# indices configuration<br/>
+index.number\_of\_shards: 2<br/>
+index.number\_of\_replicas: 1<br/>
+index.routing.allocation.total\_shards\_per\_node: 1<br/>
+\# instance paths<br/>
+path.conf: /usr/share/elasticsearch/conf<br/>
+path.plugins: /usr/share/elasticsearch/plugins<br/>
+path.data: /mnt/data/elasticsearch<br/>
+path.work: /usr/share/elasticsearch/work<br/>
+path.logs: /var/log/elasticsearch<br/>
+\# swapping<br/>
+bootstrap.mlockall: true<br/>
+\#gateway<br/>
+gateway.type: local<br/>
+gateway.recover\_after\_nodes: 3<br/>
+gateway.recover\_after\_time: 30s<br/>
+gateway.expected\_nodes: 4<br/>
+\# recovery<br/>
+cluster.routing.allocation.node\_initial\_primaries\_recoveries: 1<br/>
+cluster.routing.allocation.node\_concurrent\_recoveries: 1<br/>
+indices.recovery.concurrent\_streams: 8<br/>
+\# discovery<br/>
+discovery.zen.minimum\_master\_nodes: 3<br/>
+\# search and fetch logging<br/>
+index.search.slowlog.threshold.query.info: 500ms<br/>
+index.search.slowlog.threshold.query.debug: 100ms<br/>
+index.search.slowlog.threshold.fetch.info: 1s<br/>
+index.search.slowlog.threshold.fetch.debug: 200ms<br/>
+\# JVM gargabe collection work logging<br/>
+monitor.jvm.gc.ParNew.info: 700ms<br/>
+monitor.jvm.gc.ParNew.debug: 400ms<br/>
+monitor.jvm.gc.ConcurrentMarkSweep.info: 5s<br/>
 monitor.jvm.gc.ConcurrentMarkSweep.debug: 2s
 </blockquote>
 <p>接下来了解各个属性值的意义。</p>
@@ -90,7 +89,7 @@ routing.allocation.node\_concurrent\_recoveries属性值为1，再一次限制�
 
 <h4>记录慢查询日志</h4>
 <p>使用ElasticSearch时有件事情可能会很有用，那就是记录查询命令执行过程中一段时间或者更长的日志。记住这种日志并非记录命令的整个执行时间，而是单个分片上的执行时间，即命令的部分执行时间。在本例中，我们用INFO级别的日志来记录执行时间长于500毫秒的查询命令以及执行时间长于1秒的real time get请求。在调试时，我们把这些值分别设置为100毫秒和200毫秒。如下的配置片段用于上述需求：
-<blockquote>
+<blockquote style="text-indent:0;">
 index.search.slowlog.threshold.query.info: 500ms
 index.search.slowlog.threshold.query.debug: 100ms
 index.search.slowlog.threshold.fetch.info: 1s
@@ -100,7 +99,7 @@ index.search.slowlog.threshold.fetch.debug: 200ms
 
 <h4>记录垃圾回收器的工作日志</h4>
 <p>最后，由于我们的集群没有监控解决方案(至少刚开始没有)，我们想看到垃圾收集器的工作状态。说得更清楚一点，我们希望看到垃圾回收器是否花了太多的时间，如果是，是在哪个时间段。为了实现这一需求，我们在elasticsearch.yml文件中添加下面的信息：
-<blockquote>
+<blockquote style="text-indent:0;">
 monitor.jvm.gc.ParNew.info: 700ms
 monitor.jvm.gc.ParNew.debug: 400ms
 monitor.jvm.gc.ConcurrentMarkSweep.info: 5s
@@ -109,9 +108,9 @@ monitor.jvm.gc.ConcurrentMarkSweep.debug: 2s
 在INFO级别的日志中，ElasticSearch会把运行时间太长的垃圾回收过程的相关信息记录下来，按照设置，阈值为 concurrent mark sweep收集器收集过程超过5秒，新生垃圾收集超过700毫秒。我们也添加了DEBUG级别的日志来应对debug需求和问题的修复。
 </p>
 <!--note structure -->
-<div style="height:110px;width:650px;text-indent:0em;">
+<div style="height:50px;width:650px;text-indent:0em;">
 <div style="float:left;width:13px;height:100%; background:black;">
-  <img src="../lm.png" height="100px" width="13px" style="margin-top:5px;"/>
+  <img src="../lm.png" height="40px" width="13px" style="margin-top:5px;"/>
 </div>
 <div style="float:left;width:50px;height:100%;position:relative;">
 	<img src="../note.png" style="position:absolute; top:30%; "/>
@@ -121,11 +120,28 @@ monitor.jvm.gc.ConcurrentMarkSweep.debug: 2s
 gc-tuning-6-140523.html. </p>
 </div>
 <div style="float:left;width:13px;height:100%;background:black;">
-  <img src="../rm.png" height="100px" width="13px" style="margin-top:5px;"/>
+  <img src="../rm.png" height="40px" width="13px" style="margin-top:5px;"/>
 </div>
 </div> <!-- end of note structure -->
 
 <h4>内存设置</h4>
+<p>直到现在我们都没有提到RAM内存的设置，所以本节来学习这一知识点。假设每个节点都有16GB RAM。通常不推荐将JVM 堆内存设置高于可用内存的50%，本例也是如此。我们设置Java的Xms属性值为8g，对于我们的应用来说应该够用了。由于我们的索引数据量不大，而且由于不需要facet较高基于的域，所以就没有parent-child关系型数据。在前面显示的配置信息中，我们在ElasticSearch中也设置了垃圾回收器的相关参数，但是对于长期监测，最好使用专业的监控工具，比如SPM(http://sematext.com/spm/index.html )或者Munin(http://munin-monitoring.org/ )。</p>
+<!--note structure -->
+<div style="height:160px;width:650px;text-indent:0em;">
+<div style="float:left;width:13px;height:100%; background:black;">
+  <img src="../lm.png" height="150px" width="13px" style="margin-top:5px;"/>
+</div>
+<div style="float:left;width:50px;height:100%;position:relative;">
+	<img src="../note.png" style="position:absolute; top:30%; "/>
+</div>
+<div style="float:left; width:550px;height:100%;">
+	<p style="font-size:13px;margin-top:5px;">我们已经提到通用的规则，即50%的物理内存用于JVM，余下的内存用于操作系统。就像其它绝大部分规则一样，这条规则也适用于绝大部分的场景。但是我让设想一下，我们的索引数据会占到30GB的硬盘空间，我们有128GB的RAM内存，但是考虑到parent-child关系型的数据量和高基数的域中进行faceting操作，如果分配到JVM的堆内存是64G就会有出现out-of-memory异常的风险。在这样的安全中，是否依然只分配50%的可用内存空间呢？在我们看来，答案是NO，但这只适用于特殊的案例，前面提到从128G内存中JVM分配64G内存后，单个索引的数据量远远小于JVM中可用内存的大小，所以我们可以适当增加。但是一定要记住给操作系统留下足够的内存以避免swapping的出现。 </p>
+</div>
+<div style="float:left;width:13px;height:100%;background:black;">
+  <img src="../rm.png" height="150px" width="13px" style="margin-top:5px;"/>
+</div>
+</div> <!-- end of note structure -->
+
 
 <h4>遗失的美好</h4>
 <p>还有一点没有提到，就是bootstrap.mlockall属性。该属性能够让ElasticSearch将堆内存锁住，并确保该块内存不会被操作系统替换成虚拟内存。如果把bootstrap.mlockall设置为true，推荐用户把ES\_MIN\_ME和ES\_MAX\_ME两个属性设置成相同的值。这样做可以确保服务器有足够的物理内存来启动ElasticSearch，并且保留足够的内存给操作系统让系统流畅运行。我们将在第6章<i>应对突发事件</i> 的 <i>避免Unix-like操作系统的swapping操作</i>一节中了解更多的相关知识。</p>
