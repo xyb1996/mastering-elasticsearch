@@ -232,16 +232,15 @@ curl -XPUT 'localhost:9200/mastering/\_settings' -d '{
 <h3>其它的shard allocation属性</h3>
 
 <p>除了前面提到的那些属性，在配置shard allocation时，ElasticSearch还提供了其它的几个特性。下面我们一起来了解一下这些属性，看看集群中还有哪些是我们可以控制的<ul>
-<li>cluster.routing.allocation.allow\_rebalance: 这个属性用来控制rebalancing发生的时间，它是基于集群中分片的状态来判断的。这个属性有以下几个可选值：[always,indice\_primaries\_active, indices\_all\_active]。如果设置属性值为always，则rebalancing操作时，不用判断集群中分片的状态。(这个值要小心使用，因为它能导致集群出现高负载状态);如果设置属性值为indice\_primaries\_active，当所有的主分片都</li>
-<li>cluster.routing.allocation.cluster\_concurrent\_rebalance:</li>
-<li>cluster.routing.allocation.cluster\_concurrent\_rebalance:</li>
-<li>cluster.routing.allocation.node\_initial\_primaries\_recoveries:</li>
-<li>cluster.routing.allocation.node\_concurrent\_recoveries:</li>
-<li>cluster.routing.allocation.disable\_new\_allocation: </li>
-<li>cluster.routing.allocation.disable\_allocation:</li>
-<li>cluster.routing.allocation.disable\_replica\_allocation:</li>
+<li>cluster.routing.allocation.allow\_rebalance: 这个属性用来控制rebalancing发生的时间，它是基于集群中分片的状态来判断的。这个属性有以下几个可选值：[always,indice\_primaries\_active, indices\_all\_active]。如果设置属性值为always，则rebalancing操作时，不用判断集群中分片的状态。(这个值要小心使用，因为它能导致集群出现高负载状态);如果设置属性值为indice\_primaries\_active，当所有的主分片都可用时，rebalancing才会发生，如果设置属性值为indices\_all\_active，那么必须所有分片(主分片和分片副本)都已经分配就位，rebalancing才会发生。默认值是indices\_all\_active。</li>
+<li>cluster.routing.allocation.cluster\_concurrent\_rebalance:该属性的默认值为2，指定了集群中同一时间允许的rebalance操作的并发数。如果该值设置得比较大，将会导致比较高的I/O，比较频繁的网络活动以及比较高的节点负载。</li>
+<li>cluster.routing.allocation.node\_initial\_primaries\_recoveries:该属性指定了每个节点可以同时恢复的主分片数量。由于主分片的恢复通常比较快，所以就算该值设置得比较高也不会给节点带来太大的压力。该属性的默认值是4。</li>
+<li>cluster.routing.allocation.node\_concurrent\_recoveries:该属性值默认为2。用来指定单节点上恢复操作的并发数。需要记住的是，如果值设置的过大，将到导致非常频繁的I/O活动。</li>
+<li>cluster.routing.allocation.disable\_new\_allocation:该属性值默认为flase。用来禁止新创建的索引分配分片(主分片和分片副本都算在内)。该属性可以用于以下场景：出于某些原因，希望新创建的索引暂时不进行分片的分配。该属性同时也可以用来禁止现有的索引分配新的分片，只需要在该索引中设置index.routing.allocation.disable\_new\_allocation属性的值为true即可。</li>
+<li>cluster.routing.allocation.disable\_allocation:该属性的默认值是false，用来禁止分配已经创建好的分片和分片副本。需要注意把分片副本提升成主分片(在主分片不存在时)操作并不属于分片分配，所以即使该属性值设置为true,对分片提升操作也没有影响。该属性可以用于以下场景：需要短时间禁止新创建的索引进行分片的分配。</li>
+<li>cluster.routing.allocation.disable\_replica\_allocation:该属性值默认为false，如果该属性值设置为true，分片副本的分配将会被禁止。该属性可用于以下场景：需要暂时停止分片副本的分配。该属性也可通过在索引的设置项中设置index.routing.allocation.disable\_replica\_allocation为true来禁止某个特定索引的分片副本的分配。 </li>
 </ul>
-上面提到的所有属性都是既可以在elasticsearch.yml文件中设置，也可以用update API来设置。但是在实际应用中，用户只能使用update API来使设置生效，比如
+上面提到的所有属性都是既可以在elasticsearch.yml文件中设置，也可以用update API来设置。但是在实际应用中，用户一般只使用update API来使设置生效，比如
 cluster.routing.allocation.disable\_new\_
 allocation,
 cluster.routing.allocation.disable\_allocation, 或者
