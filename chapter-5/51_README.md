@@ -45,8 +45,33 @@
 </div> <!-- end of note structure -->
 
 <h4>其它的属性</h4>
-<p></p>
+<p>一旦使用内存存储类型，我们还对缓存有一定程度的控制，这些属性非常重要。请记住每个节点都需要设置如下的属性：
+<ul>
+<li>cache.memory.direct:该属性的默认值为true。如果想要把内存的存储空间分配在JVM堆内存之外，就需要设定该值。一般来说，保留其默认值是个不错的选择，这样能避免堆内存出现过载情况。</li>
+<li>cache.memory.small\_buffer\_size: 该属性的默认值为1KB,内部存储结构用来存储索引段信息和删除文档的相关信息.</li>
+<li>cache.memory.large\_buffer\_size:该属性的默认值为1MB，内部存储结构用来存储除段信息和删除文档信息之外的其它信息。 </li>
+<li> cache.memory.small\_cache\_size:内部内存结构用来缓存索引段信息和删除文档信息，默认值是10MB。 </li>
+<li>cache.memory.large\_cache\_size:内部内存结构用来缓存除索引段信息和删除文档信息之外的其它信息，默认值是500MB。 </li>
+</ul>
+</p>
 
 <h4>默认存储类型</h4>
-<p></p>
+<p>默认情况下，ElasticSearch会使用基于文件系统的存储。尽管不同的存储类型用于不同的操作系统，被选定的存储类型依然基于文件系统。比如，simplefs类用于32-位的windows操作系统；mmapfs用于Solaris操作系统和64-位的windows操作系统，niofs用于其它的操作系统。</p>
+
+<!--note structure -->
+<div style="height:50px;width:650px;text-indent:0em;">
+<div style="float:left;width:13px;height:100%; background:black;">
+  <img src="../lm.png" height="40px" width="13px" style="margin-top:5px;"/>
+</div>
+<div style="float:left;width:50px;height:100%;position:relative;">
+	<img src="../note.png" style="position:absolute; top:30%; "/>
+</div>
+<div style="float:left; width:550px;height:100%;">
+	<p style="font-size:13px;margin-top:5px;">如果希望寻找来自专家对directory 实现方式使用场景的看法，请参考：Uwe Schindler写的http://blog.thetaphi.de/2012/07/use-lucenes-mmapdirectory-on-64bit.html和Jörg Prante写的http://jprante.github.io/applications/2012/07/26/Mmap-with-Lucene.html </p>
+</div>
+<div style="float:left;width:13px;height:100%;background:black;">
+  <img src="../rm.png" height="40px" width="13px" style="margin-top:5px;"/>
+</div>
+</div> <!-- end of note structure -->
+<p>通常情况下，我们都会选择默认的存储类型。然而当内存容量比较大，索引也比较大的时候，考虑使用MMap文件系统存储类型是个不错的选择。这是因为使用mmap存取索引文件时，会导致索引文件缓存到操作系统的缓存中，能同时被Apache Lucene和操作系统重复使用。</p>
 </div>
