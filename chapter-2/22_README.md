@@ -56,7 +56,7 @@ curl -XGET 'localhost:9200/clients/_search?pretty' -d '{
 }'</blockquote>
 <p>
 我们用的是一个简单的前缀查询；前面说过我们的目的是找到符合以下条件的文档：name域中包含以字符 j 开头的Term。我们用rewrite参数来指定重写查询的方法，关于该参数的取值我们稍后讨论。运行前面的查询命令，我们得到的结果如下：</p>
-<blockquote>{
+<blockquote style="text-indent:0em;">{
 ...<br/>
 "hits" : {<blockquote>
 "total" : 4,<br/>

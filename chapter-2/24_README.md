@@ -1,4 +1,4 @@
 ## 批处理
 
-<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<div style="text-indent:2em;">
 </div>

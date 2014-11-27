@@ -15,7 +15,7 @@
 	<img src="../note.png" style="position:absolute; top:30%; "/>
 </div>
 <div style="float:left; width:550px;height:100%;">
-	<p style="font-size:13px;margin-top:5px;">读者也许想自己做一些性能测试。如果自己做，可以选择一些开源工具来模拟用户发送查询命令到集群中。比如，Apache JMeter(http://jmeter.apache.org/) 或者ActionGenerator((https://github.com/sematext/ActionGenerator) 。除此之外，还可以通过ElasticSearch提供的一些插件来查看统计记录，比如paramedic(https://github.com/karmi/elasticsearch-paramedic) ，或者BigDesk(https://github.com/lukas-vlcek/bigdesk) ，或者直接使用功能完善的监测和报警解决方案，比如Sematext公司开发，用于ElasticSearch的SPM系统(http://sematext.com/spm/elasticsearch-performancemonitoring/index.html) 。所有的这些工具都会提供性能测试的图示，帮助用户找到系统的瓶颈。除了上面提到的工具，读者可能还需要监控JVM垃圾收集器的工作以及操作系统的行为(上面提到的工具中有部分工具提供了相应的功能)。</p>
+	<p style="font-size:13px;margin-top:5px;">读者也许想自己做一些性能测试。如果自己做，可以选择一些开源工具来模拟用户发送查询命令到集群中。比如，Apache JMeter(http://jmeter.apache.org/) 或者ActionGenerator(https://github.com/sematext/ActionGenerator) 。除此之外，还可以通过ElasticSearch提供的一些插件来查看统计记录，比如paramedic(https://github.com/karmi/elasticsearch-paramedic) ，或者BigDesk(https://github.com/lukas-vlcek/bigdesk) ，或者直接使用功能完善的监测和报警解决方案，比如Sematext公司开发，用于ElasticSearch的SPM系统(http://sematext.com/spm/elasticsearch-performancemonitoring/index.html) 。所有的这些工具都会提供性能测试的图示，帮助用户找到系统的瓶颈。除了上面提到的工具，读者可能还需要监控JVM垃圾收集器的工作以及操作系统的行为(上面提到的工具中有部分工具提供了相应的功能)。</p>
 </div>
 <div style="float:left;width:13px;height:100%;background:black;">
   <img src="../rm.png" height="210px" width="13px" style="margin-top:5px;"/>
@@ -156,13 +156,13 @@ gc-tuning-6-140523.html. </p>
 <h4>多索引结构</h4>
 <p>让我们从基本的问题开始，为什么我们只需要一个索引？为什么我们要改变当前的系统。答案是我们想要搜索所有的文档，确定它们是来自于原始数据还是和作伙伴的数据。请注意ElasticSearch允许我们直接搜索多个索引。我们可以通过API端点使用多个索引，比如，/book,partner1/。我们还有一个灵巧的方法简单快速添加另一个合作伙伴，无需改变现有集群，也无需停止服务。我们可以用过别名(aliases)创建虚拟索引,这样就无需修改应用的源代码。</p>
 <p>经过头脑风暴，我们决定选择最后一个解决方案，通过一些额外的改善使得ElasticSearch在索引数据时压力不大。我们所做的就是禁止集群的刷新率，然后删除分片副本。
-<blockquote>curl -XPUT localhost:9200/books/_settings -d '{
+<blockquote>curl -XPUT localhost:9200/books/\_settings -d '{
  "index" : {
- "refresh_interval" : -1,
- "number_of_replicas" : 0
+ "refresh\_interval" : -1,
+ "number\_of\_replicas" : 0
  }
 }'</blockquote>
-当然，索引数据后我们变回它原来的值，唯一的一个问题就是ElasticSearch不允许改变索引的名称，这导致在配置文件中修改索引名称时，会使用服务短时间停止一下。
+当然，索引数据后我们变回它原来的值，唯一的一个问题就是ElasticSearch不允许在线改变索引的名字，这导致在配置文件中修改索引名称时，会使用服务短时间停止一下。
 </p>
 </div>
 
