@@ -24,19 +24,35 @@
 <h4>过滤器缓存的类型</h4>
 <p>在ElasticSearch中过滤器缓存有两种类型：索引级别和节点层面级别的缓存。所以基本上我们自己就可以配置过滤器缓存依赖于某个索引或者一个节点(节点是默认设置)。由于我们无法时时刻刻来猜测具体的某个索引会分配到哪个地方(实际上分配的是分片和分片副本)，也就无法预测内存的使用，因此不建议使用基于索引的过滤器。 </p>
 
-<h4>索引级别的过滤器缓存的配置</h4>
+<h4>index-level的过滤器缓存的配置</h4>
 <p>ElasticSearch允许用户使用如下的属性来配置索引级别的过滤器缓存的行为：
 <ul>
-<li>index.cache.filter.type: </li>
-<li>index.cache.filter.max_size: </li>
-<li>index.cache.filter.expire: </li>
+<li>index.cache.filter.type:该属性用来设置缓存的类型，以下选项可用：resident,soft,weak,node(默认值)。在resident缓存中存储的数据项是JVM无法删除的，除非用户用某种手段删除(用API手动删除或者设置缓存的最大容量或者有效日期) ，由于缓存数据不易丢失，而填充缓存的开销又比较大，ElasticSearch推荐使用该缓存。soft和weak过滤器缓存类型很容易在内存吃紧的时候被JVM清空。由于引用类型的不同，JVM在清除缓存时，会首先选择比较弱的引用类型对象，然后才选择soft引用(即软引用)。node属性表明缓存的控制级别是节点级别(参考本章的 <i>节点级别过滤器缓存配置</i> 一节的内容)。 </li>
+<li>index.cache.filter.max_size:该属性指定了能够存储到缓存的数据项的最大数目(默认值为-1，表示对数量没有限制)。读者需要记住，该设置项不适合整个索引，而适合索引分片中的一个索引段。使用该属性，内存的使用量会根据不同的情况而有所不同，主要取决于具体索引中分片和分片副本的数量，以及该索引包含的索引段的数量。通常情况下，默认数值，即大小无限制适用于soft类型和能够让缓存得到充分复用的查询语句。 </li>
+<li>index.cache.filter.expire:该属性指定了过滤器缓存中数据项的有效期，默认值为-1，代表永久有效。如果希望一段时间内缓存项没有命中就失效，用户可以设置一个静态的最大时间点。比如，如果希望缓存在60分钟内没有命中就失效，设置该属性值为60m即可. </li>
 </ul>
 </p>
 
-<h4>节点级别的过滤器缓存的配置</h4>
+<!--note structure -->
+<div style="height:50px;width:650px;text-indent:0em;">
+<div style="float:left;width:13px;height:100%; background:black;">
+  <img src="../lm.png" height="40px" width="13px" style="margin-top:5px;"/>
+</div>
+<div style="float:left;width:50px;height:100%;position:relative;">
+	<img src="../note.png" style="position:absolute; top:30%; "/>
+</div>
+<div style="float:left; width:550px;height:100%;">
+	<p style="font-size:13px;margin-top:5px;">如果想了解Java语言中soft和weak引用类型更多的相关知识，请参考Java文档，特别是如下两种类型相关的文档：http://docs.oracle.com/javase/7/docs/api/java/lang/ref/SoftReference.html 和 http://docs.oracle.com/javase/7/docs/api/java/lang/ref/WeakReference.html.</p>
+</div>
+<div style="float:left;width:13px;height:100%;background:black;">
+  <img src="../rm.png" height="40px" width="13px" style="margin-top:5px;"/>
+</div>
+</div> <!-- end of note structure -->
+
+<h4>node-level过滤器缓存的配置</h4>
 <p></p>
 
-<h4>域数据缓存</h4>
+<h4>field数据缓存</h4>
 <p></p>
 
 </div>
