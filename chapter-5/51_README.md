@@ -59,9 +59,9 @@
 <p>默认情况下，ElasticSearch会使用基于文件系统的存储。尽管不同的存储类型用于不同的操作系统，被选定的存储类型依然基于文件系统。比如，simplefs类用于32-位的windows操作系统；mmapfs用于Solaris操作系统和64-位的windows操作系统，niofs用于其它的操作系统。</p>
 
 <!--note structure -->
-<div style="height:50px;width:650px;text-indent:0em;">
+<div style="height:70px;width:650px;text-indent:0em;">
 <div style="float:left;width:13px;height:100%; background:black;">
-  <img src="../lm.png" height="40px" width="13px" style="margin-top:5px;"/>
+  <img src="../lm.png" height="60px" width="13px" style="margin-top:5px;"/>
 </div>
 <div style="float:left;width:50px;height:100%;position:relative;">
 	<img src="../note.png" style="position:absolute; top:30%; "/>
@@ -70,7 +70,7 @@
 	<p style="font-size:13px;margin-top:5px;">如果希望寻找来自专家对directory 实现方式使用场景的看法，请参考：Uwe Schindler写的http://blog.thetaphi.de/2012/07/use-lucenes-mmapdirectory-on-64bit.html和Jörg Prante写的http://jprante.github.io/applications/2012/07/26/Mmap-with-Lucene.html </p>
 </div>
 <div style="float:left;width:13px;height:100%;background:black;">
-  <img src="../rm.png" height="40px" width="13px" style="margin-top:5px;"/>
+  <img src="../rm.png" height="60px" width="13px" style="margin-top:5px;"/>
 </div>
 </div> <!-- end of note structure -->
 <p>通常情况下，我们都会选择默认的存储类型。然而当内存容量比较大，索引也比较大的时候，考虑使用MMap文件系统存储类型是个不错的选择。这是因为使用mmap存取索引文件时，会导致索引文件缓存到操作系统的缓存中，能同时被Apache Lucene和操作系统重复使用。</p>
