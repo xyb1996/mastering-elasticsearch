@@ -50,9 +50,23 @@
 </div> <!-- end of note structure -->
 
 <h4>node-level过滤器缓存的配置</h4>
-<p></p>
-
+<p>默认和推荐的过滤器缓存类型作用于指定结点的所有分片(使用index.cache.filter.type属性值为node或者根本不设置该属性)。ElasticSearch允许用户使用indices.cache.filter.size属性来用配置缓存的大小，该属性值可以使用百分数，比如20%(默认值)，或者静态的内存值，比如1024mb。如果我们使用百分数，ElasticSearch会根据节点的最大heap内存来计算出它的实际大小。 </p>
+<p>node-level过滤器缓存是一种LRU(Least Recently Used)类型的缓存，这意味着如果要删除缓存项，那么最长时间没有被命中到的缓存项将被丢弃，从而给新的缓存项腾出位置。</p>
 <h4>field数据缓存</h4>
-<p></p>
-
+<p>Field Data缓存在查询语句中包含faceting功能或者基于Field值排序的情况下会用到。ElasticSearch所做的就是将查询语句用到的Field的所有取值到加载内存中。通过这一步，ElasticSearch就有能力提供文档快速取值功能。有两点需要我们记住：在硬件资源层面，field数据缓存的数据加载的开销通常比较大，因为整个field的所有取值都需要加载到内存中，而且这个加载过程需要I/O操作和CPU资源。 </p>
+<!--note structure -->
+<div style="height:50px;width:650px;text-indent:0em;">
+<div style="float:left;width:13px;height:100%; background:black;">
+  <img src="../lm.png" height="40px" width="13px" style="margin-top:5px;"/>
+</div>
+<div style="float:left;width:50px;height:100%;position:relative;">
+	<img src="../note.png" style="position:absolute; top:30%; "/>
+</div>
+<div style="float:left; width:550px;height:100%;">
+	<p style="font-size:13px;margin-top:5px;">我们需要记住的是：对于每个Field，无论是对其排序还是Faceting操作，所有的取值都会加载到内存中：每个Field的所有term。这个过程的开销就很大了，特别是基数比较高的Field，term值的取值千差万别。</p>
+</div>
+<div style="float:left;width:13px;height:100%;background:black;">
+  <img src="../rm.png" height="40px" width="13px" style="margin-top:5px;"/>
+</div>
+</div> <!-- end of note structure -->
 </div>
