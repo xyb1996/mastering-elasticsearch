@@ -64,7 +64,7 @@
 }
 }
 </blockquote>
-我们可以看到，ElasticSearch返回了大量可供分析的信息。最顶层的息是索引名称和和分片。
+我们可以看到，ElasticSearch返回了大量可供分析的信息。最顶层的息是索引名称和和分片。在本例中，通过返回信息可以看到，我们有一个编号为0的分片，该分片已经启动而且正在运行("state" : "STARTED" ) ，该分片是一个主分片 ("primary" : true) ,该分片位于id为 Cz4RFYP5RnudkXzSwe-WGw的节点上。接下来的信息是关于已提交段的数量(通过num\_commited\_segments属性)和搜索段的数量(num\_search\_segments属性)。已提交段表示该段
 </p>
 
 </div>
