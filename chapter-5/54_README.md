@@ -95,8 +95,230 @@
 </div>
 </div> <!-- end of note structure -->
 
-<h4>域数据缓存项的过滤</h4>
+<h4>域数据过滤</h4>
 <p>除了前面提到的配置项，ElasticSearch还允许用户选择域数据加载到域数据缓存中。这在一些场景中很有用，特别是用户记得在排序和faceting时使用域缓存来计算结果。ElasticSearch允许用户使用两种类型过滤加载的域数据：通过词频，通过正则表达式，或者结合这两者。</p>
-<p></p>
+<p>样例之一就是faceting功能：用户可能想把频率比较低的term排除在faceting的结果之外，这时，域数据过滤就很有用了。比如，我们知道在索引中有一些term有拼写检查的错误，当然这些term的基数都比较低。我们不想因此影响faceting功能的计算，因此只能从数据集中移除他们：要么从从数据源中更改过来，要么通过过滤器从域数据缓存中去除。通过过滤，不仅仅是从ElasticSearch返回的结果中排除了这些数据，同时降低了内存的占用，因为过滤后存储在内存中的数据会更少。接下来了解一下过滤功能。</p>
+<h4>添加域数据过滤的信息</h4>
+<p>为了引入域数据过滤信息，我们需要在mappings域定义中添加额外的对象：fielddata对象以及它的子对象，filter。因此，以抽象的tag域为例，扩展后域的定义如下：
+<blockquote>
+"tag" : {
+"type" : "string",
+"index" : "not_analyzed",
+"fielddata" : {
+"filter" : {
+...
+}
+}
+}
+</blockquote>
+在接下来的一节中，我们将了解filter对象内部的秘密
+</p>
+<h4>通过词频过滤</h4>
+<p>词频过滤功能允许用户加载频率高于指定最小值(min参数)并且低于指定最大值(max参数)的term。绑定到词频的min和max参数不是基于整个索引的，而是索引的每个段，这一点非常重要，因为不同的段词频会有不同。min和max参数可以设定成一个百分数(比如百分之一就是0.01，百分之五十就是0.5)或者设定为一个具体的数值。</p>
+<p>此外，用户还可以设定min\_segment_size属性值，用于指定一个段应该包含的最小文档数。这构建域数据缓存时，低于该值的段将不考虑加载到缓存中。</p>
+<p>比如，如果我们只想把满足如下条件的term加载到域数据缓存中：1、段中的文档数不少于100；2、段中词率在1%到20%之间。那么域就可以定义如下：
+<blockquote>
+{
+"book" : {
+"properties" : {
+"tag" : {
+"type" : "string",
+"index" : "not\_analyzed",
+"fielddata" : {
+"filter" : {
+"frequency" : {
+"min" : 0.01,
+"max" : 0.2,
+"min\_segment\_size" : 100
+}
+}
+}
+}
+}
+}
+}
+</blockquote>
+</p>
+<h4>通过正则表达式过滤</h4>
+<p>除了可以通过词频过滤，还可以通过正则表达式过滤。比如有这样的应用场景：只有符合正则表达式的term才可以加载到缓存中。比如，我们只想把tag域中可能是Twitter标签(以#字符开头)的term加载到缓存中，我们的mappings就应该定义如下：
+<blockquote>
+{
+"book" : {
+"properties" : {
+"tag" : {
+"type" : "string",
+"index" : "not\_analyzed",
+"fielddata" : {
+"filter" : {
+"regex" : "^\#.\*"
+}
+}
+}
+}
+}
+}
+</blockquote>
+</p>
+<h4>通过正则表达式和词频共同过滤</h4>
+<p>理所当然，我们可以将上述的两种过滤方法结合使用。因此，如果我们希望域数据缓存中tag域中存储满足如下条件的数据：
+1、以#字符开头；2、段中至少有100个文档；3、基于段的词频介于1%和20%之间，我们应该定义如下的mappings:
+<blockquote>
+{
+"book" : {
+"properties" : {
+"tag" : {
+"type" : "string",
+"index" : "not\_analyzed",
+"fielddata" : {
+"filter" : {
+"frequency" : {
+"min" : 0.1,
+"max" : 0.2,
+"min\_segment\_size" : 100
+},
+"regex" : "^#.*"
+}
+}
+}
+}
+}
+}
+</blockquote>
+</p>
+<!--note structure -->
+<div style="height:80px;width:650px;text-indent:0em;">
+<div style="float:left;width:13px;height:100%; background:black;">
+  <img src="../lm.png" height="70px" width="13px" style="margin-top:5px;"/>
+</div>
+<div style="float:left;width:50px;height:100%;position:relative;">
+	<img src="../note.png" style="position:absolute; top:30%; "/>
+</div>
+<div style="float:left; width:550px;height:100%;">
+	<p style="font-size:13px;margin-top:5px;">请记住域缓存不是在索引过程中构建的，因此可以在查询过程中重新构建，基于此，我们可以在系统运行过程中通过mappingsAPI更新fielddata部分的设置，然面，读者需要记住更新域数据加载过滤设置项后，缓存必须用相关的API清空。关于缓存清理API，可以在本章的<i>清空缓存</i>一节中了解到。</p>
+</div>
+<div style="float:left;width:13px;height:100%;background:black;">
+  <img src="../rm.png" height="70px" width="13px" style="margin-top:5px;"/>
+</div>
+</div> <!-- end of note structure -->
+
+<h4>过滤功能的一个例子</h4>
+<p>接下来我们回到过滤章节开头的例子。我们希望排除faceting结果集中词频最低的term。在本例中，词频最低即频率低于50%的term，当然这个频率已经相当高了，只是我们的例子中只有4个文档。在真实产品中，你可能需要将词频设置得更低。为了实现这一功能，我们用如下的命令创建一个books索引：
+<blockquote>
+curl -XPOST 'localhost:9200/books' -d '{
+"settings" : {
+"number\_of\_shards" : 1,
+"number\_of\_replicas" : 0
+},
+"mappings" : {
+"book" : {
+"properties" : {
+"tag" : {
+"type" : "string",
+"index" : "not\_analyzed",
+"fielddata" : {
+"filter" : {
+"frequency" : {
+"min" : 0.5,
+"max" : 0.99
+}
+}
+}
+}
+}
+}
+}
+}'
+</blockquote>
+接下来，通过批处理API添加一些样例文档：
+<blockquote>
+curl -s -XPOST 'localhost:9200/\_bulk' --data-binary '
+{ "index": {"\_index": "books", "\_type": "book", "\_id": "1"}}
+{"tag":["one"]}
+{ "index": {"\_index": "books", "\_type": "book", "\_id": "2"}}
+{"tag":["one"]}
+{ "index": {"\_index": "books", "\_type": "book", "\_id": "3"}}
+{"tag":["one"]}
+{ "index": {"\_index": "books", "\_type": "book", "\_id": "4"}}
+{"tag":["four"]}
+'
+</blockquote>
+接下来，运行一个查询命令来检测一个简单的faceting功能(前面已经介绍了域数据缓存的操作方法)：
+<blockquote>curl -XGET 'localhost:9200/books/_search?pretty' -d ' {
+"query" : {
+"match_all" : {}
+},
+"facets" : {
+"tag" : {
+"terms" : {
+"field" : "tag"
+}
+}
+}
+}'</blockquote>
+前面查询语句的返回结果如下：
+<blockquote>
+{
+"took" : 2,
+"timed\_out" : false,
+"\_shards" : {
+"total" : 1,
+"successful" : 1,
+"failed" : 0
+},
+.
+.
+.
+"facets" : {
+"tag" : {
+"\_type" : "terms",
+"missing" : 1,
+"total" : 3,
+"other" : 0,
+"terms" : [ {
+"term" : "one",
+"count" : 3
+} ]
+}
+}
+}
+</blockquote>
+可以看到，term faceting功能只计算了值为one的term,值为four的term忽略了。如果我们假定值为four的term拼写错误，那么我们的目的就达到了。
+</p>
+
 <h4>缓存的清空</h4>
+<p>前面已经提到过，如果更改了域数据缓存的设置，在更新后清空缓存是至关重要的。同时，想更新一些用到确定缓存项的查询语句，清除缓存功能也是很有用的。ElasticSearch允许用户通过\_cache这个rest端点来清空缓存。该rest端点的使用方法随后介绍。</p>
+<h4>单个索引、多个索引、整个集群缓存的清空</h4>
+<p>我们能做的最简单的事就是通过如下的命令清空整个集群的缓存：
+<blockquote>
+curl -XPOST 'localhost:9200/\_cache/clear'
+</blockquote>
+当然，我们也可以选择清空一个或者多个索引的缓存。比如，如果想清空mastering索引的缓存，应该运行如下的命令：
+<blockquote>
+curl -XPOST 'localhost:9200/mastering/\_cache/clear'
+</blockquote>
+同时，如果想清空mastering和books索引的缓存，应该运行如下的命令：
+<blockquote>
+curl -XPOST 'localhost:9200/mastering,books/\_cache/clear'
+</blockquote>
+</p>
+
+<h4>清除指定类型的缓存</h4>
+<p>除了前面提到的缓存清理方法，我们也可以只清理指定类型的缓存。可以清空如下类型的缓存：
+<ul>
+<li>filter:设置filter参数为true，该类型的缓存即可被清除。如果不希望此类型的缓存被清除，设置filter参数值为false即可。</li>
+<li>field\_data:设置field\_data参数值为true，该类型的缓存即可被清除。如果不希望此类型的缓存被清除，设置field\_data参数值为false即可。</li>
+<li>bloom:如果想清除bloom缓存(用于倒排表的布隆过滤器，在<i>第3章 索引底层控制</i>的<i>使用Codecs</i>一节中有介绍)，bloom参数值应该设置为true。。如果不希望此类型的缓存被清除，设置bloom参数值为false即可</li>
+</ul>
+例如，如果我们想清空mastering索引中的域数据缓存，同时保留过滤器缓存和没有接触到bloom缓存，运行如下的命令即可：
+<blockquote>
+curl -XPOST 'localhost:9200/mastering/\_cache/clear?field\_data=true&filter
+=false&bloom=false'
+</blockquote>
+</p>
+<h4>清除域相关的缓存</h4>
+<p>除了可以清空所有的缓存，以及指定的缓存，我们还可以清除指定域的缓存。为了实现这一功能，我们需要在请求命令中添加fields参数，参数值为我们想清空的域,多个域用逗号隔开。例如，如果我们想清空mastering索引中title域和price域的缓存，运行如下的命令即可：
+</p>
+<blockquote>
+curl -XPOST 'localhost:9200/mastering/\_cache/clear?fields=title,price'
+</blockquote>
 </div>
