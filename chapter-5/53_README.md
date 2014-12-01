@@ -64,7 +64,24 @@
 }
 }
 </blockquote>
-我们可以看到，ElasticSearch返回了大量可供分析的信息。最顶层的息是索引名称和和分片。在本例中，通过返回信息可以看到，我们有一个编号为0的分片，该分片已经启动而且正在运行("state" : "STARTED" ) ，该分片是一个主分片 ("primary" : true) ,该分片位于id为 Cz4RFYP5RnudkXzSwe-WGw的节点上。接下来的信息是关于已提交段的数量(通过num\_commited\_segments属性)和搜索段的数量(num\_search\_segments属性)。已提交段表示该段
+我们可以看到，ElasticSearch返回了大量可供分析的信息。最顶层的息是索引名称和和分片。在本例中，通过返回信息可以看到，我们有一个编号为0的分片，该分片已经启动而且正在运行("state" : "STARTED" ) ，该分片是一个主分片 ("primary" : true) ,该分片位于id为 Cz4RFYP5RnudkXzSwe-WGw的节点上。接下来的信息是关于已提交段的数量(通过num\_commited\_segments属性)和搜索段的数量(num\_search\_segments属性)。已提交段表示该段上面运行了一个提交的命令，即段数据已经持久化到硬盘，而且是只读的了。搜索段即可用于搜索的段。接下来是一系列的段信息，每个段中包含的信息如下：
+<ul>
+<li>number:该属性为段指定了一个编号，作为多个段分组时得到的JSON对象的名称。(比如，\_0,\_1,等等)</li>
+<li>generation:该属性指定的段在索引中属于第几代，用一个整数来表示段的“老年化”程度。比如，第一个创建的段就是第0代，随后创建的段就是第1代，以此类推。</li>
+<li>num_docs:该属性表明该段中索引的文档数。</li>
+<li>deleted_docs:该属性表示该段中被标记为删除的文档数。这些标记为删除的文档将在段合并的时候被真正地删除。</li>
+<li>size:该属性表明段在硬盘上占用的空间大小。</li>
+<li>size\_in\_bytes:该属性表明段的大小用byte来表示时的数值。</li>
+<li>committed: 如果段已经提交，则该属性值为true；否则该属性值为false.</li>
+<li>search:该属性表示可搜索段的个数。</li>
+<li>version:该属性表示创建索引时使用的Lucene的版本。边注：尽管每个特定版本的ElasticSearch都只使用特定版本的Lucene，但是也是可能发生不同的索引段由不同的Lucene版本创建这一情况。像升级ElasticSearch版本，而且正好两个版本的ElasticSearch使用了不同版本的Lucene时，就会出现上面的情况。面对这种情况，旧版本的索引段会在索引合并操作时进行重写操作。</li>
+<li>compound:该属性指定了段的格式是否是组合的(所有的段信息都存储在一个文件)</li>
+</ul>
 </p>
-
+<h4>段信息可视化</h4>
+<p>当看到segments API返回的JSON格式的文本信息时，我们大脑中冒出的第一个想法可能是：如果信息是可视化的，那就很直观明了了。如果想实现这种想法，随时可以自己去做。现在已经有一个现成的名为SegmentSpy的插件(https://github.com/polyfractal/elasticsearch-segmentspy )利用我们前面提到的API实现了段信息的可视化功能。</p>
+<p>安装该插件后，将Web浏览器指向到http://localhost:9200/_plugin/segmentspy/ ，然后选择目标索引，我们就可以看到类似如下的屏幕截图
+</p>
+<center><img src="../54-segments.png"/> </center>
+<p>正如读者所见，该插件将segments API返回的信息进行了可视化的操作，这样的话想查看段信息时就能够用得上了。只是该插件没有解析ElasticSearch返回的JSON对象中的所有信息。 </p>
 </div>
