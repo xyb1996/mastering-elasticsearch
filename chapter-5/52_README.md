@@ -63,6 +63,26 @@
 </blockquote>
 
 <h4>本地Gateway</h4>
+<p>随着ElasticSearch 0.20版本发布(有些在0.19版本中)，除默认的local类型外，其它所有的gateway类型，都将废弃并且不建议用户使用，因为在未来的ElasticSearch版本中，这些类型将被移除。如果想避免出现整个数据集重新索引的情况，用户应该只使用local类型的gateway，这也是我们为什么不探讨所有其它类型gateway的原因。
+local类型的gateway使用本机硬盘存储节点上的元数据、mappings数据、索引数据。为了能够使用这种gateway类型，需要服务器的硬盘有足够的空间在不使用内存缓存的情况下存储所有数据。local类型的gateway持久化数据的方式与其它gateway有所不同，为了确保在写数据的过程中，数据不丢失，它采用同步的方式来完成写数据的功能。
+</p>
+<!--note structure -->
+<div style="height:50px;width:650px;text-indent:0em;">
+<div style="float:left;width:13px;height:100%; background:black;">
+  <img src="../lm.png" height="40px" width="13px" style="margin-top:5px;"/>
+</div>
+<div style="float:left;width:50px;height:100%;position:relative;">
+	<img src="../note.png" style="position:absolute; top:30%; "/>
+</div>
+<div style="float:left; width:550px;height:100%;">
+	<p style="font-size:13px;margin-top:5px;">如果想设置集群使用的gateway类型，用户需要使用gateway.type属性，默认情况下该属性值为local </p>
+</div>
+<div style="float:left;width:13px;height:100%;background:black;">
+  <img src="../rm.png" height="40px" width="13px" style="margin-top:5px;"/>
+</div>
+</div> <!-- end of note structure -->
+
+<h4>local类型gateway的备份</h4>
 <p></p>
 <h4>恢复机制的配置</h4>
 <p></p>
