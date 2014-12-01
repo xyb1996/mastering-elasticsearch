@@ -70,9 +70,33 @@
 </div>
 </div> <!-- end of note structure -->
 <h4>index-level过滤器缓存的配置</h4>
-<p></p>
+<p>与index-level过滤器缓存类似，我们也可以使用index-level域数据缓存，但是我们再说一次，不推荐使用index-level的缓存，原因还是一样的：哪个分片或者哪个索引分配到哪个节点是很难预测的。因此我们也无法预测每个索引使用到的内存有多少，这样容易出现内存溢出问题。 </p>
+<p>然而，如果用户用户熟知系统底层，熟知业务特点，了解resident和soft域数据缓存，可以将index.fielddata.cache.type属性值为resident或者soft来启用index-level的域数据缓存。在前面的过滤器缓存中已经有过描述，resident属性的缓存无法由JVM自动移除，除非用户介入。如果使用index-level域数据缓存，推荐使用resident类型。重建域数据缓存开销巨大，而且会影响搜索性能。soft类型的域数据缓存可以在内存不足时由JVM自动移除。 </p>
+<h4>Node-level过滤器缓存的配置</h4>
+<p>ElasticSearch 0.90.0版本允许用户使用使用如下属性来设置node-level域数据缓存，如果用户没有修改配置，node-level域数据缓存是默认的类型。
+<ul>
+<li>indices.fielddata.cache.size:该属性有来指定域数据缓存的大小，可以使用百分数比如20%或者具体的数值，比如10gb。如果使用百分数，ElasticSearch会根据节点的最大堆内存值(heap memory)将百分数换算成具体的数值。默认情况下，域数据缓存的大小是没有限制的。 </li>
+<li>indices.fielddata.cache.expire:该属性用来设置域数据缓存中缓存项的失效时间，默认值是-1，表示缓存项不会失效。如果希望缓存项在指定时间内不命中就失效的话，可以设置缓存项沉寂的最大时间。比如，如果希望缓存项60分钟内不命中就失效的话，就设置该属性值为60m.</li>
+</ul>
+</p>
+<!--note structure -->
+<div style="height:80px;width:650px;text-indent:0em;">
+<div style="float:left;width:13px;height:100%; background:black;">
+  <img src="../lm.png" height="70px" width="13px" style="margin-top:5px;"/>
+</div>
+<div style="float:left;width:50px;height:100%;position:relative;">
+	<img src="../note.png" style="position:absolute; top:30%; "/>
+</div>
+<div style="float:left; width:550px;height:100%;">
+	<p style="font-size:13px;margin-top:5px;">如果想确保ElasticSearch应用node-level域数据缓存，用户可以设置index.fielddata.cache.type属性值为node，或者根本不设置该属性的值即可。</p>
+</div>
+<div style="float:left;width:13px;height:100%;background:black;">
+  <img src="../rm.png" height="70px" width="13px" style="margin-top:5px;"/>
+</div>
+</div> <!-- end of note structure -->
 
-<h4>node-level过滤器缓存的配置</h4>
+<h4>域数据缓存项的过滤</h4>
+<p>除了前面提到的配置项，ElasticSearch还允许用户选择域数据加载到域数据缓存中。这在一些场景中很有用，特别是用户记得在排序和faceting时使用域缓存来计算结果。ElasticSearch允许用户使用两种类型过滤加载的域数据：通过词频，通过正则表达式，或者结合这两者。</p>
 <p></p>
 <h4>缓存的清空</h4>
 </div>
