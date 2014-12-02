@@ -91,6 +91,46 @@ local类型的gateway使用本机硬盘存储节点上的元数据、mappings数
 </ul>
 </p>
 <h4>恢复机制的配置</h4>
-<p>我们已经提到可以使用gateway来配置ElasticSearch恢复过程的行为,但是除外之外，ElasticSearch还允许用户自己配置恢复过程。在第4章 分布式索引构架 的 改变分片的默认分配方式一节中，我们已经提到一些恢复功能的配置，但是，我们认为在gateway和recovery相关的章节中讨论这些能用到的属性是最合适的。 </p>
+<p>我们已经提到可以使用gateway来配置ElasticSearch恢复过程的行为,但是除外之外，ElasticSearch还允许用户自己配置恢复过程。在第4章 分布式索引构架 的 改变分片的默认分配方式一节中，我们已经提到一些恢复功能的配置，但是，我们认为在gateway和recovery相关的章节中讨论这些用到的属性是最合适的。 </p>
+
+<h4>cluster-level 恢复机制的配置</h4>
+<p>绝大多数恢复机制都是定义在集群层面的，用户通过为恢复模块设置通用的规则来控制恢复模块的工作。这些设置项如下：
+<ul>
+<li>indices.recovery.concurrent\_streams:该属性的默认值为3，表明从数据源恢复分片数据时，允许同时打开的数据流通道。该值越大，网络层的压力也就越大，同时恢复的速度也就越快，当然恢复速度与网络使用量和总的吞吐量也有关系。  <li>
+<li>indices.recovery.max\_bytes\_per\_sec:该属性默认设置为20MB，表示分片在恢复过程中每秒传输的最大数据量。要想关闭传输量的限制，用户需要设置该属性值为0。与并发流的功能相似，该属性允许用户在恢复过程中控制网络的流量。设置该属性一个比较大的值会导致网络变得繁忙，当然恢复过程也会加快。<li>
+<li>indices.recovery.compress:该属性值默认为true，允许用户自行决定在恢复过程是否对数据进行压缩。设置该属性值为false可以降低CPU的压力，与此同时，会导致网络需要传输更多的数据。 <li>
+<li>indices.recovery.file\_chunk\_size:该属性值指定了用于从源数据复制到分片时，每次复制的数据块的大小。默认值是512KB,同时如果indices.recovery.compress属性设置为true，数据会被压缩。 <li>
+<li>indices.recovery.translog\_ops:该属性值默认为1000，指定了在恢复过程中，单个请求中分片间传输的事务日志的行数。<li>
+<li>indices.recovery.translog\_size: 该属性指定了从源数据分片复制事务日志数据时每次处理的数据块的大小。默认值为512KB，同时如果如果indices.recovery.compress属性设置为true，数据会被压缩。 <li>
+</ul>
+</p>
+<!--note structure -->
+<div style="height:50px;width:650px;text-indent:0em;">
+<div style="float:left;width:13px;height:100%; background:black;">
+  <img src="../lm.png" height="40px" width="13px" style="margin-top:5px;"/>
+</div>
+<div style="float:left;width:50px;height:100%;position:relative;">
+	<img src="../note.png" style="position:absolute; top:30%; "/>
+</div>
+<div style="float:left; width:550px;height:100%;">
+	<p style="font-size:13px;margin-top:5px;">在ElasticSearch 0.90.0版本前，曾用到indices.recovery.max\_size\_per\_sec属性，但是在随后的版本中，该属性值被废弃了，由indices.recovery.max\_bytes\_per\_sec属性替代。然而，如果使用0.90.0版本前的ElasticSearch，还是有必要记住这个属性。 </p>
+</div>
+<div style="float:left;width:13px;height:100%;background:black;">
+  <img src="../rm.png" height="40px" width="13px" style="margin-top:5px;"/>
+</div>
+</div> <!-- end of note structure -->
+<p>上述的所有属性都可以通过集群的update API或者elasticsearch.yml来设置生效。</p>
+
+<h4>index-level 恢复机制的配置</h4>
+<p>除了前面提到的属性，还有一个可以作用于单个索引的属性。该属性可以在elasticsearch.yml文件中设置，也可以用索引更新的API来设置，它是index.recovery.initial\_shards。通常情况下，当集群中还存在着不低于quorum数量的分片，并且这些分片都可进行分配时，ElasticSearch只会恢复一个特殊的分片。quorum数量是指总的分片数量加一。通过使用index.recovery.initial\_shards属性时，用户可以改变ElasticSearch中quorum的实际分片数量。该属性可设置如下值：
+<ul>
+<li>quorum: 该值意味着集群中至少有(分片总数的50%+1)个分片存在并且可分配。</li>
+<li>quorum-1:该值意味着集群中至少有(分片总数的50%-1)个分片存在并且可分配。</li>
+<li>full:该值意味着集群中所有的分片都必须存在并且可分配。</li>
+<li>full-1:该值意味着集群中至少有(分片总数-1)个分片必须存在并且可分配。</li>
+<li>整数值:表示可设置为任意的整数值，比如1,2或者5，表示至少需要存在且可分配的分片数。比如，属性值为2，表示最少需要2个分片存在，同时ElasticSearch中至少需要2个分片可分配。</li>
+</ul>
+了解该属性值的作用总会有用上的一天，尽管在绝大多数场景中使用默认值就足够了。
+</p>
 </div>
 
