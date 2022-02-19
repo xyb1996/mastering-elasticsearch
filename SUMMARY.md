@@ -43,6 +43,8 @@
   * [理解ElasticSearch的缓存](chapter-5/54\_README.md)
   * [本章小结](chapter-5/55\_README.md)
 * [第6章 应对突发事件](chapter-6/README.md)
+  * [6.1 了解垃圾收集器](chapter-6/6.1-le-jie-la-ji-shou-ji-qi.md)
+  * [Page 1](chapter-6/page-1.md)
 * [第7章 优化用户体验](chapter-7/README.md)
 * [第8章 ElasticSearch Java API](chapter-8/README.md)
 * [第9章 开发ElasticSearch插件](chapter-9/README.md)
