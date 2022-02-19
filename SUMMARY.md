@@ -25,6 +25,7 @@
 * [第3章 索引底层控制](chapter-3/README.md)
   * [3.1 改变Lucene的打分模型](chapter-3/3.1-gai-bian-lucene-de-da-fen-mo-xing.md)
   * [3.2 相似度模型的配置](chapter-3/3.2-xiang-si-du-mo-xing-de-pei-zhi.md)
+  * [3.4 近实时搜索，段数据刷新，数据可见性跟新](chapter-3/3.4-jin-shi-shi-sou-suo-duan-shu-ju-shua-xin-shu-ju-ke-jian-xing-gen-xin.md)
 * [第4章 探究分布式索引架构](chapter-4/README.md)
   * [选择恰当的分片数量和分片副本数量](chapter-4/41\_README.md)
   * [路由功能浅谈](chapter-4/42\_README.md)
